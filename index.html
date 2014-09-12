@@ -11,26 +11,14 @@
     <!--Add script to update the page and send messages.-->
     <script type="text/javascript">
         $(function () {
-            // Declare a proxy to reference the hub.
             var photo = $.connection.photoHub;
-            // Create a function that the hub can call to broadcast messages.
             photo.client.setImg = function (binary) {
-                // Html encode display name and message.
                 $('#img-showing').attr('src', binary);
             };
-            // Get the user name and store it to prepend to messages.
-            //$('#displayname').val(prompt('Enter your name:', ''));
-            // Set initial focus to message input box.
-            //$('#message').focus();
-            // Start the connection.
+            
             $.connection.hub.start().done(function () {
                 photo.server.init('E:\\照片\\taiwan')
-                //$('#sendmessage').click(function () {
-                //    // Call the Send method on the hub.
-                //    chat.server.send($('#displayname').val(), $('#message').val());
-                //    // Clear text box and reset focus for next comment.
-                //    $('#message').val('').focus();
-                //});
+                
             });
         });
     </script>

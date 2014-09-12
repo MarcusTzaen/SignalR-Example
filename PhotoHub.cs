@@ -14,13 +14,20 @@ namespace WebApplication1
         {
             // Call the broadcastMessage method to update clients.
             //Clients.All.broadcastMessage(name, message);
-            PathPool.Add(GetBinary(Directory.GetFiles(path).FirstOrDefault()));
+            PathPool.Add(GetBinary(Directory.GetFiles(path).FirstOrDefault()), Context.ConnectionId);
             var timer = new Timer(3000);
             timer.Elapsed += (s, e) =>
             {
                 GlobalHost.ConnectionManager.GetHubContext<PhotoHub>().Clients.All.SetImg(PathPool.Lst.FirstOrDefault());
             };
             timer.Enabled = true;
+        }
+
+        
+        public override System.Threading.Tasks.Task OnDisconnected(bool stopCalled)
+        {
+            PathPool.Lst.Remove(PathPool.Lst.FirstOrDefault(o => o.ConnectionId.Equals(Context.ConnectionId)));
+            return base.OnDisconnected(stopCalled);
         }
 
 
@@ -36,18 +43,28 @@ namespace WebApplication1
 
     public static class PathPool
     {
-        private static List<string> _lst;
-        public static List<string> Lst
+        private static List<Photo> _lst;
+        public static List<Photo> Lst
         {
             get { return _lst; }
         }
-        public static void Add(string path)
+        public static void Add(string path,string connectionId)
         {
             if (_lst == null)
             {
-                _lst = new List<string>();
+                _lst = new List<Photo>();
             }
-            _lst.Add(path);
+            _lst.Add(new Photo()
+            {
+                Path = path,
+                ConnectionId = connectionId,
+            });
         }
+    }
+
+    public class Photo
+    {
+        public string Path { get; set; }
+        public string ConnectionId { get; set; }
     }
 }
