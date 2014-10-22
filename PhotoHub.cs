@@ -12,8 +12,7 @@ namespace WebApplication1
     {
         public void Init(string path)
         {
-            // Call the broadcastMessage method to update clients.
-            //Clients.All.broadcastMessage(name, message);
+            //it's not recommended .
             PathPool.Add(GetBinary(Directory.GetFiles(path).FirstOrDefault()), Context.ConnectionId);
             var timer = new Timer(3000);
             timer.Elapsed += (s, e) =>
